@@ -1,11 +1,8 @@
-FROM debian:stretch-slim
+FROM alpine:2.6
 
-RUN apt-get update \
-  && apt-get install -y openssh-client open-vm-tools \
-  && rm -rf /var/lib/apt/lists/*
+COPY ["run.sh", "shutdown.sh", "/"]
+RUN mv shutdown.sh /sbin/shutdown &&\
+    apk -U add openssh-client open-vm-tools --repository http://alpine.waterlemons2k.com/alpine/v2.6/main &&\
+    rm -rf /var/cache/*
 
-COPY run.sh /run.sh
-COPY shutdown.sh /sbin/shutdown
-
-CMD [ "/run.sh" ]
-
+ENTRYPOINT [ "/run.sh" ]
